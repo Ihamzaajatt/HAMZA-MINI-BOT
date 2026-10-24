@@ -20,7 +20,7 @@ async function startBot() {
 
     // ✅ PAIR CODE LOGIN
     if (!sock.authState.creds.registered) {
-        const number = "923XXXXXXXXX" // Yahan apna WhatsApp number dalo 92 ke sath
+        const number = "923262091250"
         setTimeout(async () => {
             let code = await sock.requestPairingCode(number)
             console.log(`\n🔥 HAMZA-MINI-BOT PAIR CODE: ${code} 🔥\n`)
