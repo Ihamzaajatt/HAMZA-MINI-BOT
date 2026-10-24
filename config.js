@@ -1,6 +1,12 @@
-module.exports = {
-  ownerNumber: "923262091250",
-  ownerName: "HAMZA JUTT",
-  botName: "HAMZA-MINI-BOT",
-  prefix: "."
+{
+  "name": "hamza-mini-bot",
+  "version": "1.0.0",
+  "main": "server.js",
+  "engines": { "node": "20.x" },
+  "scripts": { "start": "node server.js" },
+  "dependencies": {
+    "@whiskeysockets/baileys": "^6.7.18",
+    "express": "^4.18.2",
+    "pino": "^8.16.0"
+  }
 }
