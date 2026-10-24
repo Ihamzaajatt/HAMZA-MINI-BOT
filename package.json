@@ -1,0 +1,15 @@
+{
+  "name": "HAMZA-MINI-BOT",
+  "version": "1.0.0",
+  "description": "HAMZA-MINI-BOT - 10 Features Mini MD",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@whiskeysockets/baileys": "^6.7.8",
+    "pino": "^8.19.0",
+    "qrcode-terminal": "^0.12.0",
+    "fs-extra": "^11.1.1"
+  }
+}
