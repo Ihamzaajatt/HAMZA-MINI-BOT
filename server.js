@@ -18,7 +18,9 @@ app.get('/', (req, res) => {
   <form action="/code">
   <input name="number" placeholder="92300xxxxxxx" required>
   <button>GET PAIR CODE</button>
-  </form></div></body></html>
+  </form>
+  <p style="font-size:12px;color:#888;margin-top:15px">Code 20 sec me expire hota hai!<br>Foran WhatsApp me dalo!</p>
+  </div></body></html>
   `);
 });
 
@@ -26,37 +28,20 @@ app.get('/code', async (req, res) => {
   let num = (req.query.number || '').replace(/[^0-9]/g, '');
   if (!num) return res.send('<h2><a href="/">Back</a> Enter Number!</h2>');
 
-  // Lazy load baileys only here - so main website doesn't crash
   try {
     const pino = require('pino');
     const { default: makeWASocket, useMultiFileAuthState, makeCacheableSignalKeyStore, Browsers, delay } = require('@whiskeysockets/baileys');
 
     if (fs.existsSync('./session')) fs.rmSync('./session', { recursive: true, force: true });
-    const { state } = await useMultiFileAuthState('./session');
+    const { state, saveCreds } = await useMultiFileAuthState('./session');
+    
     const sock = makeWASocket({
       auth: { creds: state.creds, keys: makeCacheableSignalKeyStore(state.keys, pino({ level: "fatal" })) },
       logger: pino({ level: "fatal" }),
-      browser: Browsers.macOS("Chrome"),
+      browser: Browsers.macOS("Desktop"),
       printQRInTerminal: false
     });
-    
-    if (!sock.authState.creds.registered) {
-      await delay(3000);
-      let code = await sock.requestPairingCode(num);
-      return res.send(`
-      <body style="background:#000;color:#fff;text-align:center;font-family:sans-serif;padding-top:50px">
-      <div style="background:#111;border:1px solid #25D366;border-radius:20px;padding:25px;max-width:380px;margin:auto">
-      <h2 style="color:#25D366">PAIR CODE</h2>
-      <p>${num}</p>
-      <h1 style="font-size:45px;background:#222;padding:15px;border-radius:10px;letter-spacing:3px">${code}</h1>
-      <p style="color:#aaa">WhatsApp > Linked Devices > Link with phone number > Paste Code</p>
-      <a href="/" style="background:#25D366;color:#000;padding:10px 20px;border-radius:8px;text-decoration:none;font-weight:bold">NEW CODE</a>
-      </div></body>`);
-    }
-  } catch (e) {
-    console.log('ERROR:', e);
-    res.send(`<h2 style="text-align:center;font-family:sans-serif">Error: ${e.message}<br><br>Logs: ${e.stack}<br><br><a href="/">Back</a></h2>`);
-  }
-});
 
-app.listen(PORT, () => console.log('Running on ' + PORT));
+    sock.ev.on('creds.update', saveCreds);
+
+    // Important: Wait for
